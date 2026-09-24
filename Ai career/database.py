@@ -1,31 +1,43 @@
+import os
 import sqlite3
 
-conn = sqlite3.connect('database.db')
+# Vercel environment check: Serverless runtime par '/tmp' directory writable hoti hai
+if os.environ.get('VERCEL'):
+    DB_PATH = '/tmp/database.db'
+else:
+    DB_PATH = 'database.db'
 
-cursor = conn.cursor()
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS students(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    email TEXT,
-    branch TEXT,
-    skills TEXT,
-    password TEXT
-)
-''')
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS resume_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    filename TEXT,
-    score INTEGER,
-    skills TEXT,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-""")
+    # Students Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS students(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT,
+        branch TEXT,
+        skills TEXT,
+        password TEXT
+    )
+    ''')
 
-conn.commit()
-conn.close()
+    # Resume History Table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS resume_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        filename TEXT,
+        score INTEGER,
+        skills TEXT,
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
 
-print("Database Created Successfully")
+    conn.commit()
+    conn.close()
+    print(f"Database Created/Initialized Successfully at: {DB_PATH}")
+
+if __name__ == "__main__":
+    init_db()
