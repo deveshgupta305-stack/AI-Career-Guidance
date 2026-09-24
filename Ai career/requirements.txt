@@ -1,3 +1,5 @@
 Flask
 google-genai
 PyPDF2
+reportlab
+python-dotenv
