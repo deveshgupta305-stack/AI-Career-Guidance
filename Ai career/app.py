@@ -15,12 +15,24 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "devesh_secret_key_123")
 
 # =========================================================
+# Vercel Compatibility Configuration
+# =========================================================
+# Vercel par root directory read-only hoti hai, isiliye '/tmp' directory use karenge
+DB_PATH = '/tmp/database.db' if os.environ.get('VERCEL') else 'database.db'
+
+if os.environ.get('VERCEL'):
+    app.config['UPLOAD_FOLDER'] = '/tmp'
+else:
+    app.config['UPLOAD_FOLDER'] = 'Uploads'
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
+# =========================================================
 # 1. Google GenAI Client Configuration
 # =========================================================
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-
-import time
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 def safe_generate_content(prompt):
     models_to_try = ['gemini-3.6-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
@@ -41,19 +53,12 @@ def safe_generate_content(prompt):
                     break
                     
     raise Exception("Google API is busy right now. Please try again after 1 minute.")
-# System se variables fetch karein
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "default-fallback-key")
-
-app.config['UPLOAD_FOLDER'] = 'Uploads'
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 # =========================================================
 # 2. Database Initialization
 # =========================================================
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS students (
@@ -65,9 +70,20 @@ def init_db():
             password TEXT NOT NULL
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS resume_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            filename TEXT,
+            score INTEGER,
+            skills TEXT,
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
     conn.commit()
     conn.close()
 
+# App launch hote hi DB table ensure karein
 init_db()
 
 # Career Database for Prediction & Skill Gap
@@ -127,7 +143,7 @@ def register():
 
         hashed_password = generate_password_hash(password)
 
-        conn = sqlite3.connect('database.db')
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
         try:
@@ -158,7 +174,7 @@ def login():
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
 
-        conn = sqlite3.connect('database.db')
+        conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row 
         cursor = conn.cursor()
 
@@ -455,7 +471,6 @@ def analyze_resume_api():
         5. Actionable Improvement Recommendations
         """
 
-       # Naya Code
         response = safe_generate_content(prompt)
         return jsonify({
             'success': True,
@@ -531,10 +546,7 @@ def resume_builder():
         """
 
         try:
-            response = client.models.generate_content(
-                model='gemini-3.6-flash',
-                contents=prompt
-            )
+            response = safe_generate_content(prompt)
             generated_resume = response.text
         except Exception as e:
             generated_resume = f"Resume generation error: {str(e)}"
@@ -555,10 +567,7 @@ def chatbot():
         if user_question:
             try:
                 prompt = f"You are an expert Career Counselor AI. Answer this student's query clearly and concisely: {user_question}"
-                response = client.models.generate_content(
-                    model='gemini-3.6-flash',
-                    contents=prompt
-                )
+                response = safe_generate_content(prompt)
                 answer = response.text
             except Exception as e:
                 answer = f"Error generating response: {str(e)}"
@@ -687,7 +696,7 @@ def admin_dashboard():
     if not session.get('is_admin'):
         return redirect(url_for('admin_login'))
 
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("SELECT id, name, email, branch, skills FROM students ORDER BY id DESC")
@@ -730,7 +739,6 @@ def mock_interview():
     role = None
     interview_type = None
     questions = []
-    user_answers = {}
     feedback = None
 
     if request.method == 'POST':
@@ -738,7 +746,7 @@ def mock_interview():
         role = request.form.get('role', 'General Tech')
         interview_type = request.form.get('type', 'Technical')
 
-        # Action 1: Start Interview (Fetch Questions)
+        # Action 1: Start Interview
         if action == 'start':
             questions = MOCK_QUESTIONS_DB.get(role, MOCK_QUESTIONS_DB["General Tech"])
         
@@ -749,7 +757,6 @@ def mock_interview():
             user_ans_2 = request.form.get('ans_1', '').strip()
             user_ans_3 = request.form.get('ans_2', '').strip()
 
-            # AI Feedback Evaluation (Simulated AI Scoring & Tips)
             total_words = len(user_ans_1.split()) + len(user_ans_2.split()) + len(user_ans_3.split())
             score = min(95, max(60, 50 + (total_words // 4)))
 
