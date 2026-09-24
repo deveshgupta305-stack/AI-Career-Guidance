@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Structured Study Planner with Gamification</title>
+    
+    <!-- Canvas Confetti Library for Star Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .header h2 {
+            color: #ffffff;
+            font-size: 24px;
+        }
+        .btn-dash {
+            background-color: transparent;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-dash:hover {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+        }
+        @media (max-width: 850px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background-color: #151c2c;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            color: #38bdf8;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            background-color: #0b0f19;
+            border: 1px solid #334155;
+            color: #ffffff;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .btn-submit {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+        
+        /* Gamification & Progress Styles */
+        .gamify-banner {
+            background: linear-gradient(135deg, #1e1b4b, #311b92);
+            border: 1px solid #4338ca;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rewards-count {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .reward-badge {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #fbbf24;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background-color: #0b0f19;
+            border-radius: 10px;
+            height: 12px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 10px;
+            border: 1px solid #1e293b;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            transition: width 0.4s ease;
+        }
+
+        /* Week & Day Styling */
+        .week-box {
+            background-color: #151c2c;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+        }
+        .week-title {
+            color: #60a5fa;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .star-reward {
+            font-size: 24px;
+            opacity: 0.3;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+        .star-reward.unlocked {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.3);
+            text-shadow: 0 0 10px #fbbf24;
+        }
+
+        .day-row {
+            background-color: #0b0f19;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .day-row:hover {
+            background-color: #1e293b;
+        }
+        .day-row.completed {
+            border-color: #10b981;
+            background-color: #064e3b22;
+        }
+        .day-row.completed .day-details strong {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+        
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #10b981;
+            cursor: pointer;
+        }
+        .day-tag {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            min-width: 65px;
+            text-align: center;
+        }
+        .day-details strong {
+            color: #f8fafc;
+            display: block;
+            font-size: 15px;
+            margin-bottom: 3px;
+        }
+        .day-details span {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        .resource-tag {
+            display: inline-block;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            color: #93c5fd;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin: 4px;
+        }
+        .empty-box {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>📅 AI Gamified Study Planner</h2>
+    <a href="/dashboard" class="btn-dash">← Dashboard</a>
+</div>
+
+<div class="layout-grid">
+    <!-- Left Configuration Panel -->
+    <div>
+        <div class="card">
+            <div class="card-title">Configure Plan</div>
+            <form action="/study-planner" method="POST">
+                
+                <div class="form-group">
+                    <label>Target Career / Skill</label>
+                    <input type="text" name="target_role" class="form-control" placeholder="e.g. Python, Flutter, DevOps" required value="{{ target_role }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Current Experience Level</label>
+                    <select name="current_level" class="form-select">
+                        <option value="Beginner">Beginner (Zero Knowledge)</option>
+                        <option value="Intermediate">Intermediate (Knows Basics)</option>
+                        <option value="Advanced">Advanced (Revision & Practice)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Duration</label>
+                    <select name="duration" class="form-select">
+                        <option value="2 Weeks">2 Weeks (Fast Track)</option>
+                        <option value="4 Weeks" selected>4 Weeks (Recommended)</option>
+                        <option value="8 Weeks">8 Weeks (Detailed)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">🚀 Generate Interactive Plan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Right Gamified Output Panel -->
+    <div>
+        {% if planner_data %}
+            {% if planner_data.error %}
+                <div class="card" style="border-color: #ef4444; color: #f87171;">
+                    {{ planner_data.error }}
+                </div>
+            {% else %}
+                
+                <!-- Gamification Banner -->
+                <div class="gamify-banner">
+                    <div>
+                        <h4 style="color: #ffffff; font-size: 16px; margin-bottom: 4px;">🏆 Your Learning Progress</h4>
+                        <span id="progress-text" style="color: #cbd5e1; font-size: 13px;">0 of 0 Days Completed (0%)</span>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="main-progress"></div>
+                        </div>
+                    </div>
+                    <div class="rewards-count">
+                        <div class="reward-badge">⭐ Stars: <span id="total-stars">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Strategy Overview -->
+                <div class="card" style="border-left: 4px solid #38bdf8;">
+                    <h4 style="color: #38bdf8; margin-bottom: 6px;">🎯 Strategy Overview</h4>
+                    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.5;">{{ planner_data.overview }}</p>
+                </div>
+
+                <!-- Schedule -->
+                <h3 style="color: #ffffff; margin-bottom: 15px; font-size: 20px;">🗓️ Day-by-Day Interactive Tracker</h3>
+                
+                {% for week in planner_data.weeks %}
+                    <div class="week-box" id="week-card-{{ week.week_number }}">
+                        <div class="week-header">
+                            <div class="week-title">Week {{ week.week_number }}: {{ week.week_title }}</div>
+                            <span class="star-reward" id="star-week-{{ week.week_number }}">⭐</span>
+                        </div>
+                        
+                        {% for day in week.days %}
+                            <div class="day-row" onclick="toggleTask(this, 'w{{ week.week_number }}-d{{ loop.index }}')">
+                                <input type="checkbox" class="custom-checkbox task-check" id="chk-w{{ week.week_number }}-d{{ loop.index }}" onclick="event.stopPropagation(); updateProgress();">
+                                <div class="day-tag">{{ day.day }}</div>
+                                <div class="day-details">
+                                    <strong>{{ day.topic }}</strong>
+                                    <span>Task: {{ day.task }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <!-- Resources -->
+                {% if planner_data.resources %}
+                <div class="card">
+                    <div class="card-title" style="color: #f59e0b;">📚 Free Recommended Resources</div>
+                    <div>
+                        {% for res in planner_data.resources %}
+                            <span class="resource-tag">🔗 {{ res }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Milestone Project -->
+                {% if planner_data.final_project %}
+                <div class="card" style="border-left: 4px solid #10b981;">
+                    <div class="card-title" style="color: #10b981;">🏆 End-of-Plan Milestone Project</div>
+                    <p style="color: #cbd5e1; font-size: 14px; margin: 0;">{{ planner_data.final_project }}</p>
+                </div>
+                {% endif %}
+
+            {% endif %}
+        {% else %}
+            <!-- Empty State -->
+            <div class="card empty-box">
+                <h3 style="color: #94a3b8; margin-bottom: 8px;">No Roadmap Generated Yet</h3>
+                <p>Enter your target career on the left and click <strong>Generate Interactive Plan</strong>.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Toggle row selection on clicking anywhere on day box
+    function toggleTask(rowElement, taskId) {
+        const checkbox = document.getElementById('chk-' + taskId);
+        checkbox.checked = !checkbox.checked;
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('.task-check');
+        const total = checkboxes.length;
+        if (total === 0) return;
+
+        let checkedCount = 0;
+
+        checkboxes.forEach((chk) => {
+            const row = chk.closest('.day-row');
+            if (chk.checked) {
+                checkedCount++;
+                row.classList.add('completed');
+            } else {
+                row.classList.remove('completed');
+            }
+        });
+
+        // Calculate progress percentage
+        const percent = Math.round((checkedCount / total) * 100);
+        document.getElementById('main-progress').style.width = percent + '%';
+        document.getElementById('progress-text').innerText = `${checkedCount} of ${total} Days Completed (${percent}%)`;
+
+        // Check week-by-week completion for Star Rewards
+        let totalStars = 0;
+        const weekCards = document.querySelectorAll('.week-box');
+        
+        weekCards.forEach((weekCard, index) => {
+            const weekNum = index + 1;
+            const weekCheckboxes = weekCard.querySelectorAll('.task-check');
+            const weekTotal = weekCheckboxes.length;
+            let weekChecked = 0;
+
+            weekCheckboxes.forEach(c => { if(c.checked) weekChecked++; });
+
+            const starElement = document.getElementById(`star-week-${weekNum}`);
+            
+            if (weekTotal > 0 && weekChecked === weekTotal) {
+                totalStars++;
+                if (!starElement.classList.contains('unlocked')) {
+                    starElement.classList.add('unlocked');
+                    // Confetti Celebration Effect on completing a week!
+                    confetti({
+                        particleCount: 50,
+                        spread: 60,
+                        origin: { y: 0.6 }
+                    });
+                }
+            } else {
+                starElement.classList.remove('unlocked');
+            }
+        });
+
+        document.getElementById('total-stars').innerText = totalStars;
+    }
+
+    // Auto calculate on load
+    document.addEventListener("DOMContentLoaded", () => {
+        updateProgress();
+    });
+</script>
+
+</body>
+</html>

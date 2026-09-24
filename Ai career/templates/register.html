@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AI Career Guidance</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .register-container { width: 420px; padding: 35px; background: #1e293b; border-radius: 20px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); }
+        .logo { text-align: center; font-size: 45px; margin-bottom: 5px; }
+        h1 { text-align: center; color: #38bdf8; font-size: 32px; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #cbd5e1; margin-bottom: 28px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; color: #f8fafc; margin-bottom: 7px; font-weight: bold; }
+        input, select { width: 100%; padding: 13px 15px; border: none; border-radius: 10px; outline: none; background: #f8fafc; color: #1e293b; font-size: 15px; }
+        input:focus, select:focus { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35); }
+        .register-btn { width: 100%; padding: 14px; border: none; border-radius: 10px; background: #2563eb; color: white; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: 0.3s; }
+        .register-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+        .login-link { text-align: center; margin-top: 22px; color: #cbd5e1; }
+        .login-link a { color: #38bdf8; text-decoration: none; font-weight: bold; }
+        .login-link a:hover { text-decoration: underline; }
+        .error { background: #7f1d1d; color: #fecaca; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="logo">🎯</div>
+    <h1>AI Career Guidance</h1>
+    <p class="subtitle">Create your account</p>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label>Branch</label>
+            <select name="branch" required>
+                <option value="">Select your branch</option>
+                <option value="CSE">CSE</option>
+                <option value="CSE AIML">CSE AIML</option>
+                <option value="ECE">ECE</option>
+                <option value="IT">IT</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Skills (Comma Separated)</label>
+            <input type="text" name="skills" placeholder="e.g. Python, HTML, CSS" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Create password" required>
+        </div>
+        <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" placeholder="Confirm password" required>
+        </div>
+        <button type="submit" class="register-btn">Create Account</button>
+    </form>
+    <div class="login-link">
+        Already have an account? <a href="{{ url_for('login') }}">Login</a>
+    </div>
+</div>
+</body>
+</html>

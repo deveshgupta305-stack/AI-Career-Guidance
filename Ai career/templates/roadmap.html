@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Career Roadmap</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: #1e293b;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 16px;
+            padding: 20px 28px;
+        }
+
+        .form-label {
+            color: #93c5fd !important;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background-color: #0f172a !important;
+            border: 1px solid var(--card-border) !important;
+            color: #ffffff !important;
+            border-radius: 10px;
+            padding: 12px 16px;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            color: #ffffff !important;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 12px 20px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .roadmap-node-container {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .roadmap-node-container::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 4px;
+        }
+
+        .roadmap-node {
+            position: relative;
+            margin-bottom: 24px;
+            padding-left: 40px;
+        }
+
+        .roadmap-node-icon {
+            position: absolute;
+            left: -3px;
+            top: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #0f172a;
+            border: 3px solid var(--accent-blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .phase-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .mermaid-box {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            text-align: center;
+        }
+
+        .task-check-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-check-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-blue);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="py-4">
+
+<div class="container-fluid px-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/dashboard" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+            </a>
+            <h3 class="m-0 fw-bold"><i class="fa-solid fa-map-location-dot text-primary me-2"></i>Universal Career Roadmap</h3>
+        </div>
+    </div>
+
+    <div class="header-card mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h5 class="fw-bold m-0"><i class="fa-solid fa-route text-info me-2"></i>Interactive Career Flowchart & Nodes</h5>
+            <p class="m-0 mt-1 small" style="color: var(--text-secondary);">Select or type any custom career goal to render your interactive flowchart diagram and milestone roadmap.</p>
+        </div>
+        <div class="d-flex gap-3 align-items-center">
+            <div class="text-end">
+                <span class="small text-uppercase fw-bold" style="color: var(--text-muted);">Progress Tracker</span>
+                <div class="fw-bold text-white fs-5" id="progressPercent">0% Completed</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        
+        <!-- Left Panel -->
+        <div class="col-lg-4">
+            <div class="glass-card">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-sliders me-2 text-primary"></i>Configure Career</h5>
+                
+                <form method="POST" action="/roadmap">
+                    <div class="mb-3">
+                        <label class="form-label">Select Standard Preset</label>
+                        <select name="role" class="form-select">
+                            <option value="">-- Select Preset Role --</option>
+                            <option value="Machine Learning Engineer" {% if target_role == 'Machine Learning Engineer' %}selected{% endif %}>Machine Learning Engineer</option>
+                            <option value="Full Stack Developer" {% if target_role == 'Full Stack Developer' %}selected{% endif %}>Full Stack Developer</option>
+                            <option value="Data Scientist" {% if target_role == 'Data Scientist' %}selected{% endif %}>Data Scientist</option>
+                            <option value="DevOps Engineer" {% if target_role == 'DevOps Engineer' %}selected{% endif %}>DevOps Engineer</option>
+                            <option value="Cyber Security Analyst" {% if target_role == 'Cyber Security Analyst' %}selected{% endif %}>Cyber Security Analyst</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center small my-2" style="color: var(--text-muted); font-weight: 600;">-- OR TYPE CUSTOM --</div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Type Any Custom Career</label>
+                        <input type="text" name="custom_role" class="form-control" placeholder="e.g. AR/VR Developer, Cloud Architect">
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100">
+                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Generate Roadmap
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Roadmap Display Panel -->
+        <div class="col-lg-8">
+            {% if target_role and roadmap_phases %}
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold m-0"><i class="fa-solid fa-diagram-project text-info me-2"></i>Target Roadmap: <span class="text-primary">{{ target_role }}</span></h5>
+                
+                <ul class="nav nav-pills" id="roadmapTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active btn-sm text-white" id="diagram-tab" data-bs-toggle="tab" data-bs-target="#diagram-view" type="button" role="tab">
+                            <i class="fa-solid fa-sitemap me-1"></i> Flowchart Diagram
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link btn-sm text-white" id="steps-tab" data-bs-toggle="tab" data-bs-target="#steps-view" type="button" role="tab">
+                            <i class="fa-solid fa-list-check me-1"></i> Milestone Nodes
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content" id="roadmapTabContent">
+                
+                <!-- TAB 1: Mermaid Flowchart Diagram -->
+                <div class="tab-pane fade show active" id="diagram-view" role="tabpanel">
+                    <div class="glass-card mb-4">
+                        <h6 class="fw-bold mb-3 text-info"><i class="fa-solid fa-diagram-next me-2"></i>Visual Path Flowchart</h6>
+                        <div class="mermaid-box">
+                            <pre class="mermaid">
+                                flowchart TD
+                                    A["Start: {{ target_role }}"]
+                                    {% for phase in roadmap_phases %}
+                                        {% if loop.first %}
+                                            A --> B["{{ phase.phase }}: {{ phase.title }}"]
+                                        {% elif loop.index == 2 %}
+                                            B --> C["{{ phase.phase }}: {{ phase.title }}"]
+                                        {% elif loop.index == 3 %}
+                                            C --> D["{{ phase.phase }}: {{ phase.title }}"]
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    style A fill:#3b82f6,stroke:#1d4ed8,color:#fff,stroke-width:2px
+                                    style B fill:#1e293b,stroke:#3b82f6,color:#fff
+                                    style C fill:#1e293b,stroke:#8b5cf6,color:#fff
+                                    style D fill:#10b981,stroke:#059669,color:#fff
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Dynamic Milestone Cards -->
+                <div class="tab-pane fade" id="steps-view" role="tabpanel">
+                    <div class="roadmap-node-container">
+                        {% for phase in roadmap_phases %}
+                        <div class="roadmap-node">
+                            <div class="roadmap-node-icon"><i class="fa-solid fa-check"></i></div>
+                            <div class="glass-card">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="phase-badge">{{ phase.phase }}</span>
+                                    <span class="small" style="color: var(--text-muted);"><i class="fa-regular fa-clock me-1"></i>{{ phase.duration }}</span>
+                                </div>
+                                <h6 class="fw-bold text-white m-0">{{ phase.title }}</h6>
+                                <p class="small my-2" style="color: var(--text-secondary);">{{ phase.desc }}</p>
+
+                                {% for skill in phase.skills %}
+                                <div class="task-check-item">
+                                    <input type="checkbox" class="roadmap-check" onchange="updateProgress()">
+                                    <span class="small text-white">{{ skill }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+            {% else %}
+            
+            <div class="glass-card text-center py-5">
+                <div class="my-4">
+                    <i class="fa-solid fa-diagram-project text-info opacity-75" style="font-size: 4rem;"></i>
+                </div>
+                <h5 class="fw-bold text-white mb-2">No Roadmap Selected</h5>
+                <p class="small mx-auto" style="color: var(--text-secondary); max-width: 420px;">
+                    Select a preset career role or enter a custom title on the left panel to generate your interactive flowchart diagram.
+                </p>
+            </div>
+
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('.roadmap-check');
+        const checked = document.querySelectorAll('.roadmap-check:checked');
+        if(checkboxes.length === 0) return;
+        
+        const percent = Math.round((checked.length / checkboxes.length) * 100);
+        document.getElementById('progressPercent').innerText = percent + "% Completed";
+    }
+</script>
+
+</body>
+</html>

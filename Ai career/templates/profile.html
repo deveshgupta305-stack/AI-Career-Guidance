@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>👤 My Profile</h1>
+
+        <h3>Name : {{ name }}</h3>
+
+        <h3>Branch : {{ branch }}</h3>
+
+        <h3>Skills : {{ skills }}</h3>
+
+        <br>
+
+        <a href="/dashboard">
+            <button>Back Dashboard</button>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

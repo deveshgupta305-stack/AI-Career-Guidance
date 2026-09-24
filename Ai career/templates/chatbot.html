@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 75vh;
+        background: #0f172a;
+        border-radius: 12px;
+        border: 1px solid #334155;
+        overflow: hidden;
+    }
+    .chat-header {
+        padding: 15px 20px;
+        background: #1e293b;
+        border-bottom: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .chat-box {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .message {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 15px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+    .bot-message {
+        align-self: flex-start;
+        background: #1e293b;
+        color: #f8fafc;
+        border: 1px solid #334155;
+        border-bottom-left-radius: 2px;
+    }
+    .chat-input-area {
+        padding: 15px;
+        background: #1e293b;
+        border-top: 1px solid #334155;
+        display: flex;
+        gap: 10px;
+    }
+    .chat-input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 8px;
+        background: #0f172a;
+        color: white;
+        border: 1px solid #334155;
+        outline: none;
+    }
+</style>
+
+<h2>🤖 AI Career Counselor</h2>
+<p style="color: #94a3b8; margin-bottom: 20px;"> Ask anything about career advice, code, or interview tips.</p>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <i class="fa-solid fa-robot" style="font-size: 24px; color: #38bdf8;"></i>
+        <div>
+            <h4 style="margin: 0;"> Career AI</h4>
+            <span style="font-size: 12px; color: #4ade80;">● Online</span>
+        </div>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="message bot-message">
+            Hello! 👋 
+        </div>
+        {% if user_question %}
+        <div class="message user-message" style="align-self: flex-end; background: #2563eb; color: white;">
+            {{ user_question }}
+        </div>
+    {% endif %}
+
+        {% if answer %}
+            <div class="message bot-message">
+                {{ answer }}
+            </div>
+        {% endif %}
+    </div>
+
+    <form action="/chatbot" method="POST" class="chat-input-area">
+        <input type="text" name="question" class="chat-input" placeholder="Type your career question here..." required>
+        <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Send</button>
+    </form>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chatBox');
+    chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+{% endblock %}

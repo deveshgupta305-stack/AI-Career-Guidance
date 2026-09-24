@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Skill Gap Result</title>
+</head>
+<body>
+
+<h1>Skill Gap Result</h1>
+
+<h2>Selected Career:</h2>
+<p>{{ career }}</p>
+
+<h2>Missing Skills:</h2>
+
+<ul>
+{% for skill in missing %}
+<li>{{ skill }}</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>

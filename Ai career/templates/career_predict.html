@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Career Recommendation</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🎯 AI Career Recommendation</h1>
+
+<form method="POST">
+
+<label>Branch</label>
+
+<input type="text"
+name="branch"
+placeholder="CSE, AIML, ECE">
+
+<label>Your Skills</label>
+
+<input type="text"
+name="skills"
+placeholder="Python, Java, SQL">
+
+<label>Your Interest</label>
+
+<input type="text"
+name="interest"
+placeholder="AI, Web, Security">
+
+<button type="submit">
+Predict Career
+</button>
+{% if career %}
+
+<div class="card">
+
+<h2>🎯 Recommended Career</h2>
+
+<h1>🤖 {{ career }}</h1>
+<h2>Career Match Score</h2>
+
+<div class="progress">
+    <div class="progress-bar" style="width: {{ match_score }}%">
+        {{ match_score }}%
+    </div>
+</div>
+
+
+<h3>Why this career?</h3>
+
+<ul>
+
+{% for r in reason %}
+
+<li>{{ r }}</li>
+
+{% endfor %}
+
+</ul>
+
+
+<h3>Learning Path</h3>
+
+<hr>
+
+<h2>🏆 Top Career Recommendations</h2>
+
+<table class="career-table">
+    <tr>
+        <th>Rank</th>
+        <th>Career</th>
+        <th>Match</th>
+    </tr>
+
+    {% for c, score in top_careers %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ c }}</td>
+        <td>{{ score }}%</td>
+    </tr>
+    {% endfor %}
+
+</table>
+<hr>
+
+<h2>📌 Missing Skills</h2>
+
+<div class="skill-box">
+
+{% for skill in missing_skills %}
+    <span class="skill-tag">{{ skill }}</span>
+{% endfor %}
+
+</div>
+
+{% if career_info %}
+
+<hr>
+
+<h2>💰 Salary</h2>
+<p>{{ career_info.salary }}</p>
+
+<h2>🏢 Top Companies</h2>
+<ul>
+    {% for company in career_info.companies %}
+    <li>{{ company }}</li>
+    {% endfor %}
+</ul>
+
+<h2>📜 Recommended Certifications</h2>
+<ul>
+    {% for cert in career_info.certifications %}
+    <li>{{ cert }}</li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<!--Missing Skill-->
+{% if career_info %}
+
+<h2>📚 Recommended Courses</h2>
+
+<ul>
+{% for course in career_info.courses %}
+    <li>{{ course }}</li>
+{% endfor %}
+</ul>
+
+{% endif %}
+
+<ol>
+
+{% for step in roadmap %}
+
+<li>{{ step }}</li>
+
+{% endfor %}
+
+</ol>
+
+</div>
+
+{% endif %}
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

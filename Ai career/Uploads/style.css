@@ -1,0 +1,19 @@
+body{
+    background-color: rgba(235, 75, 75, 0.625);
+    color: rgb(200, 0, 255);
+
+    
+} 
+h1{ background-color: aqua;
+  color: darkred;}
+h2{background-color: rgba(181, 186, 195, 0.764) ;
+  color: rgb(139, 86, 0);        
+}
+label{ max-width: fit-content;
+background-color: rgb(6, 156, 13);   
+ color: gold;
+}
+div{
+background-color: rgba(187, 31, 214, 0.47);
+color: deeppink;
+}

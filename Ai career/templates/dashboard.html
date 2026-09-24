@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Career Platform</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #0b1120;
+            color: #f8fafc;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #0f172a;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            border-right: 1px solid #1e293b;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            color: #38bdf8;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: #1e293b;
+            color: #38bdf8;
+        }
+
+        .logout-link {
+            margin-top: auto;
+            color: #ef4444 !important;
+        }
+
+        .logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            flex: 1;
+            max-width: 1200px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-card h1 {
+            color: #38bdf8;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .welcome-card .subtitle {
+            font-size: 1.05rem;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+        }
+
+        .welcome-card .description {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .user-meta p {
+            margin-top: 6px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* Metrics Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .metric-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 20px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .metric-title {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .metric-text {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            word-break: break-word;
+        }
+
+        /* Features Section */
+        .section-title {
+            font-size: 1.3rem;
+            color: #f8fafc;
+            margin-bottom: 20px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 25px;
+            border-radius: 14px;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: #38bdf8;
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h3 {
+            color: #f8fafc;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: #94a3b8;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .btn-card {
+            display: inline-block;
+            text-align: center;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .btn-card:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h2>🚀 AI Career</h2>
+        <a href="{{ url_for('dashboard') }}" class="active">🏠 Dashboard</a>
+        <a href="{{ url_for('resume') }}">📄 Resume Analyzer</a>
+        <a href="{{ url_for('resume_builder') }}">✨ AI Resume Creator</a>
+        <a href="{{ url_for('skill_gap') }}">📊 Skill Gap</a>
+        <a href="{{ url_for('roadmap') }}">🗺️ Career Roadmap</a>
+        <a href="{{ url_for('mock_interview') }}">🎙️ AI Mock Interview</a>
+        <a href="{{ url_for('study_planner') }}">📅 Study Planner</a>
+        <a href="{{ url_for('chatbot') }}">🤖 AI Assistant</a>
+        <a href="{{ url_for('profile') }}">👤 My Profile</a>
+        <a href="{{ url_for('logout') }}" class="logout-link">🚪 Logout</a>
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div class="main-content">
+        
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <h1>Welcome {{ user.name }}</h1>
+            <p class="subtitle">🎓 <strong>Student Dashboard</strong></p>
+            <p class="description">Track your career growth using AI tools. AI Powered Smart Career Guidance System</p>
+            <div class="user-meta">
+                <p><strong>Branch:</strong> {{ user.branch }}</p>
+                <p><strong>Skills:</strong> {{ user.skills }}</p>
+            </div>
+        </div>
+
+        <!-- Metric Cards Grid -->
+        <div class="stats-grid">
+            <div class="metric-card">
+                <span class="metric-title">🎯 Career Score</span>
+                <div class="metric-value">{{ user.career_score }}%</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">🧠 Skills</span>
+                <div class="metric-text">{{ user.skills }}</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">📄 Resume Score</span>
+                <div class="metric-value">{{ user.resume_score }}</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">🚀 Profile Level</span>
+                <div class="metric-value">{{ user.profile_level }}</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">👤 Users</span>
+                <div class="metric-value">{{ user.users_count }}</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">📄 Resumes</span>
+                <div class="metric-value">{{ user.resumes_count }}</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">🎯 Careers</span>
+                <div class="metric-value">{{ user.careers_count }}</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">🤖 AI Queries</span>
+                <div class="metric-value">{{ user.ai_queries }}</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Quick Actions</h2>
+        
+        <!-- Feature Cards -->
+        <div class="card-grid">
+            
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">📄</div>
+                    <h3>Resume Analyzer</h3>
+                    <p>Upload your existing resume PDF to get an ATS Score and Gemini AI feedback.</p>
+                </div>
+                <a href="{{ url_for('resume') }}" class="btn-card">Open Analyzer</a>
+            </div>
+
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">✨</div>
+                    <h3>AI Resume Creator</h3>
+                    <p>Fill in your skills & projects, and Gemini AI will generate a fresh ATS-optimized resume.</p>
+                </div>
+                <a href="{{ url_for('resume_builder') }}" class="btn-card">Create Resume</a>
+            </div>
+
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">📊</div>
+                    <h3>Skill Gap Analysis</h3>
+                    <p>Compare your current skills with industry job requirements.</p>
+                </div>
+                <a href="{{ url_for('skill_gap') }}" class="btn-card">Check Skills</a>
+            </div>
+
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">🗺️</div>
+                    <h3>Career Roadmap</h3>
+                    <p>Get a step-by-step custom learning plan for your desired tech role.</p>
+                </div>
+                <a href="{{ url_for('roadmap') }}" class="btn-card">View Roadmap</a>
+            </div>
+
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">🎙️</div>
+                    <h3>AI Mock Interview</h3>
+                    <p>Practice technical & behavioral interview questions with real-time AI feedback.</p>
+                </div>
+                <a href="{{ url_for('mock_interview') }}" class="btn-card">Start Practice</a>
+            </div>
+
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">📅</div>
+                    <h3>Study Planner</h3>
+                    <p>Create personalized daily study schedules, deadlines, and track milestones.</p>
+                </div>
+                <a href="{{ url_for('study_planner') }}" class="btn-card">Open Planner</a>
+            </div>
+
+            <div class="feature-card">
+                <div>
+                    <div class="card-icon">🤖</div>
+                    <h3>AI Career Assistant</h3>
+                    <p>Ask career advice, interview preparation questions, or technical queries.</p>
+                </div>
+                <a href="{{ url_for('chatbot') }}" class="btn-card">Chat Now</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
